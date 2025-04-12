@@ -3,12 +3,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Service, Testimonial, FAQ, BlogPost, VirtualConsultation, PatientPortal, TreatmentRecord
-from .forms import ContactForm, AppointmentForm, TestimonialForm
+from .forms import ContactForm, AppointmentForm, TestimonialForm, UserSignupForm
+from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView
 
 def home(request):
-    testimonials = Testimonial.objects.filter(is_approved=True).order_by('-created_at')[:3]
-    latest_posts = BlogPost.objects.filter(is_published=True).order_by('-published_date')[:3]
+    services = Service.objects.all()[:3]
+    testimonials = Testimonial.objects.filter(is_approved=True)[:3]
+    latest_posts = BlogPost.objects.filter(is_published=True)[:3]
     return render(request, 'clinic/home.html', {
+        'services': services,
         'testimonials': testimonials,
         'latest_posts': latest_posts
     })
@@ -20,9 +25,11 @@ def services(request):
 def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     testimonials = Testimonial.objects.filter(service_received=service, is_approved=True)
+    related_services = Service.objects.exclude(id=service_id)[:3]
     return render(request, 'clinic/service_detail.html', {
         'service': service,
-        'testimonials': testimonials
+        'testimonials': testimonials,
+        'related_services': related_services
     })
 
 def contact(request):
@@ -51,19 +58,25 @@ def book_appointment(request):
 
 def testimonials(request):
     testimonials = Testimonial.objects.filter(is_approved=True).order_by('-created_at')
+    services = Service.objects.all()
+    
     if request.method == 'POST':
         form = TestimonialForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Thank you for your testimonial. It will be reviewed and published soon.')
+            testimonial = form.save(commit=False)
+            testimonial.is_approved = False  # New testimonials need admin approval
+            testimonial.save()
+            messages.success(request, 'Thank you for your testimonial! It will be reviewed and published soon.')
             return redirect('testimonials')
     else:
         form = TestimonialForm()
     
-    return render(request, 'clinic/testimonials.html', {
+    context = {
         'testimonials': testimonials,
+        'services': services,
         'form': form
-    })
+    }
+    return render(request, 'clinic/testimonials.html', context)
 
 def faqs(request):
     faqs = FAQ.objects.all()
@@ -84,25 +97,21 @@ def blog_post(request, post_id):
 @login_required
 def virtual_consultation(request):
     if request.method == 'POST':
-        service_id = request.POST.get('service')
-        preferred_date = request.POST.get('preferred_date')
-        preferred_time = request.POST.get('preferred_time')
-        symptoms = request.POST.get('symptoms')
-        medical_history = request.POST.get('medical_history')
-
+        # Handle the consultation form submission
         consultation = VirtualConsultation.objects.create(
             patient=request.user,
-            service_id=service_id,
-            preferred_date=preferred_date,
-            preferred_time=preferred_time,
-            symptoms=symptoms,
-            medical_history=medical_history
+            symptoms=request.POST.get('symptoms'),
+            medical_history=request.POST.get('medical_history'),
+            current_medications=request.POST.get('current_medications'),
+            preferred_date=request.POST.get('preferred_date'),
+            preferred_time=request.POST.get('preferred_time')
         )
-        messages.success(request, 'Your virtual consultation has been scheduled successfully!')
+        messages.success(request, 'Your virtual consultation request has been submitted. A doctor will review it soon.')
         return redirect('patient_portal')
-
-    services = Service.objects.all()
-    return render(request, 'clinic/virtual_consultation.html', {'services': services})
+    
+    return render(request, 'clinic/virtual_consultation.html', {
+        'user': request.user
+    })
 
 def price_calculator(request):
     if request.method == 'POST':
@@ -139,3 +148,16 @@ def patient_portal(request):
         'consultations': consultations,
         'treatments': treatments
     })
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Account created successfully! Welcome to PhysioCare.')
+            return redirect('home')
+    else:
+        form = UserSignupForm()
+    
+    return render(request, 'clinic/signup.html', {'form': form})

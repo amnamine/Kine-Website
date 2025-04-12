@@ -44,11 +44,28 @@ class BlogPostAdmin(admin.ModelAdmin):
 
 @admin.register(VirtualConsultation)
 class VirtualConsultationAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'service', 'preferred_date', 'preferred_time', 'status', 'created_at')
-    list_filter = ('service', 'preferred_date', 'status', 'created_at')
+    list_display = ('patient', 'preferred_date', 'preferred_time', 'status', 'created_at')
+    list_filter = ('status', 'preferred_date')
     search_fields = ('patient__username', 'symptoms', 'medical_history')
-    readonly_fields = ('created_at',)
-    list_editable = ('status',)
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        ('Patient Information', {
+            'fields': ('patient',)
+        }),
+        ('Consultation Details', {
+            'fields': ('symptoms', 'medical_history', 'current_medications')
+        }),
+        ('Scheduling', {
+            'fields': ('preferred_date', 'preferred_time')
+        }),
+        ('Status and Notes', {
+            'fields': ('status', 'doctor_notes')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
 
 @admin.register(PatientPortal)
 class PatientPortalAdmin(admin.ModelAdmin):

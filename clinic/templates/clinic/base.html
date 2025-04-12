@@ -124,11 +124,20 @@
         .social-icons a:hover {
             color: var(--secondary-color);
         }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <i class="fas fa-heartbeat me-2"></i>PhysioCare
@@ -137,7 +146,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
@@ -145,23 +154,59 @@
                         <a class="nav-link" href="{% url 'services' %}">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'price_calculator' %}">Price Calculator</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'virtual_consultation' %}">Virtual Consultation</a>
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'testimonials' %}">Testimonials</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog' %}">Blog</a>
+                        <a class="nav-link" href="{% url 'faqs' %}">FAQs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        <a class="nav-link" href="{% url 'blog' %}">Blog</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'virtual_consultation' %}">Virtual Consultation</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'patient_portal' %}">Patient Portal</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            {% if user.is_staff %}
+                                Admin: {{ user.username }}
+                            {% elif user.is_superuser %}
+                                Doctor: {{ user.username }}
+                            {% else %}
+                                Patient: {{ user.username }}
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'patient_portal' %}">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">Register</a>
                     </li>
                     {% endif %}
                 </ul>

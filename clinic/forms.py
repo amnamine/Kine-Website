@@ -1,5 +1,7 @@
 from django import forms
 from .models import ContactMessage, Appointment, Service, Testimonial, BlogPost
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class ContactForm(forms.ModelForm):
     class Meta:
@@ -45,4 +47,22 @@ class BlogPostForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
             'author': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
-        } 
+        }
+
+class UserSignupForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+        return user 

@@ -14,4 +14,5 @@ urlpatterns = [
     path('virtual-consultation/', views.virtual_consultation, name='virtual_consultation'),
     path('price-calculator/', views.price_calculator, name='price_calculator'),
     path('patient-portal/', views.patient_portal, name='patient_portal'),
+    path('signup/', views.signup, name='signup'),
 ] 

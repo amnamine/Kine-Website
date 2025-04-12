@@ -1,117 +1,125 @@
 {% extends 'clinic/base.html' %}
+{% load static %}
 
 {% block title %}Patient Testimonials - PhysioCare{% endblock %}
 
 {% block content %}
-<div class="testimonials-section">
-    <h2>Patient Testimonials</h2>
-    <p class="intro-text">Read what our patients have to say about their experience with PhysioCare.</p>
-
-    <div class="testimonials-grid">
-        {% for testimonial in testimonials %}
-        <div class="testimonial-card">
-            <div class="rating">
-                {% for i in "12345"|make_list %}
-                    {% if forloop.counter <= testimonial.rating %}
-                        <span class="star filled">★</span>
-                    {% else %}
-                        <span class="star">☆</span>
-                    {% endif %}
-                {% endfor %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold mb-4">Patient Testimonials</h1>
+                <p class="lead">Hear from our patients about their experiences with our physiotherapy services</p>
             </div>
-            <p class="content">"{{ testimonial.content }}"</p>
-            <div class="patient-info">
-                <span class="name">{{ testimonial.patient_name }}</span>
-                <span class="service">Service: {{ testimonial.service_received.name }}</span>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Grid -->
+<section class="container my-5">
+    <div class="row g-4">
+        {% for testimonial in testimonials %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 testimonial-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="feature-icon me-3">
+                            <i class="fas fa-user-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">{{ testimonial.patient_name }}</h5>
+                            <small class="text-muted">{{ testimonial.service_received.name }}</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= testimonial.rating %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="card-text">{{ testimonial.content }}</p>
+                    <p class="card-text"><small class="text-muted">{{ testimonial.created_at|date:"F d, Y" }}</small></p>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
+</section>
 
-    <div class="add-testimonial">
-        <h3>Share Your Experience</h3>
-        <form method="post" class="testimonial-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn">Submit Testimonial</button>
-        </form>
+<!-- Submit Testimonial -->
+<section class="container my-5">
+    <div class="card">
+        <div class="card-body p-5">
+            <h2 class="text-center section-title mb-4">Share Your Experience</h2>
+            <p class="text-center lead mb-4">We value your feedback. Share your experience with our services to help others make informed decisions.</p>
+            
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label for="patient_name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="patient_name" name="patient_name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="service_received" class="form-label">Service Received</label>
+                    <select class="form-select" id="service_received" name="service_received" required>
+                        <option value="">Choose a service...</option>
+                        {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label for="content" class="form-label">Your Experience</label>
+                    <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Rating</label>
+                    <div class="rating">
+                        {% for i in "12345"|make_list %}
+                        <input type="radio" name="rating" value="{{ i }}" id="rating{{ i }}" required>
+                        <label for="rating{{ i }}"><i class="fas fa-star"></i></label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Testimonial</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</section>
 
 <style>
-    .testimonials-section {
-        padding: 2rem 0;
-    }
-    .testimonials-section h2 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 1rem;
-    }
-    .intro-text {
-        text-align: center;
-        max-width: 800px;
-        margin: 0 auto 2rem;
-    }
-    .testimonials-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-    .testimonial-card {
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .rating {
-        margin-bottom: 1rem;
-    }
-    .star {
-        color: #ffd700;
-        font-size: 1.2rem;
-    }
-    .star.filled {
-        color: #ffd700;
-    }
-    .content {
-        font-style: italic;
-        margin-bottom: 1rem;
-    }
-    .patient-info {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    .name {
-        font-weight: bold;
-        color: #2c3e50;
-    }
-    .service {
-        color: #666;
-        font-size: 0.9rem;
-    }
-    .add-testimonial {
-        max-width: 600px;
-        margin: 3rem auto;
-        padding: 2rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .add-testimonial h3 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-    }
-    .testimonial-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .testimonial-form .btn {
-        align-self: center;
-        margin-top: 1rem;
-    }
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.rating input:checked ~ label,
+.rating input:checked ~ label ~ label {
+    color: #ffc107;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+    color: #ffc107;
+}
 </style>
 {% endblock %} 

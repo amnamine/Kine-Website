@@ -83,23 +83,26 @@ class BlogPost(models.Model):
         return self.title
 
 class VirtualConsultation(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
     patient = models.ForeignKey(User, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    preferred_date = models.DateField()
-    preferred_time = models.TimeField()
     symptoms = models.TextField()
     medical_history = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
-    ], default='pending')
+    current_medications = models.TextField(blank=True)
+    preferred_date = models.DateField()
+    preferred_time = models.TimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    meeting_link = models.URLField(blank=True, null=True)
-
+    updated_at = models.DateTimeField(auto_now=True)
+    doctor_notes = models.TextField(blank=True)
+    
     def __str__(self):
-        return f"Virtual Consultation for {self.patient.username} on {self.preferred_date}"
+        return f"Virtual Consultation - {self.patient.username} - {self.preferred_date}"
 
 class PatientPortal(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

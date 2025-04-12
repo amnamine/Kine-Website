@@ -1,0 +1,124 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold mb-4">{{ service.name }}</h1>
+                <p class="lead">{{ service.description }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Details -->
+<section class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="section-title">About This Service</h2>
+                    <p class="lead">{{ service.detailed_description }}</p>
+                    
+                    <h3 class="mt-4">What to Expect</h3>
+                    <p>{{ service.what_to_expect }}</p>
+                    
+                    <h3 class="mt-4">Benefits</h3>
+                    <p>{{ service.benefits }}</p>
+                </div>
+            </div>
+
+            <!-- Testimonials -->
+            {% if testimonials %}
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="section-title">Patient Experiences</h2>
+                    <div class="row g-4">
+                        {% for testimonial in testimonials %}
+                        <div class="col-md-6">
+                            <div class="card h-100 testimonial-card">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= testimonial.rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <p class="card-text">{{ testimonial.content }}</p>
+                                    <p class="card-text"><small class="text-muted">- {{ testimonial.patient_name }}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <!-- Service Info Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Service Details</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <strong>Duration:</strong> {{ service.duration }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-dollar-sign text-primary me-2"></i>
+                            <strong>Price:</strong> ${{ service.price }}
+                        </li>
+                    </ul>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'book_appointment' %}?service={{ service.id }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-check me-2"></i>Book Appointment
+                        </a>
+                        <a href="{% url 'virtual_consultation' %}?service={{ service.id }}" class="btn btn-outline-primary">
+                            <i class="fas fa-video me-2"></i>Virtual Consultation
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Services -->
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Related Services</h3>
+                    <div class="list-group">
+                        {% for related_service in related_services %}
+                        <a href="{% url 'service_detail' related_service.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ related_service.name }}</span>
+                                <span class="badge bg-primary">${{ related_service.price }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="container my-5">
+    <div class="card bg-primary text-white">
+        <div class="card-body text-center p-5">
+            <h2 class="card-title">Ready to Start Your Treatment?</h2>
+            <p class="card-text lead">Take the first step towards better health today.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'book_appointment' %}?service={{ service.id }}" class="btn btn-light btn-lg">Book Appointment</a>
+                <a href="{% url 'virtual_consultation' %}?service={{ service.id }}" class="btn btn-outline-light btn-lg">Virtual Consultation</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

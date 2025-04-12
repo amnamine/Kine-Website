@@ -1,69 +1,150 @@
 {% extends 'clinic/base.html' %}
+{% load static %}
 
 {% block title %}Home - PhysioCare{% endblock %}
 
 {% block content %}
-<div class="welcome-section">
-    <h2>Welcome to PhysioCare</h2>
-    <p>Your trusted partner in physiotherapy and rehabilitation services. We are dedicated to helping you achieve optimal physical health and well-being through personalized treatment plans and expert care.</p>
-    
-    <div class="features">
-        <div class="feature">
-            <h3>Expert Care</h3>
-            <p>Our team of experienced physiotherapists provides personalized treatment plans tailored to your specific needs.</p>
-        </div>
-        <div class="feature">
-            <h3>Modern Facilities</h3>
-            <p>State-of-the-art equipment and comfortable treatment spaces ensure the best possible care experience.</p>
-        </div>
-        <div class="feature">
-            <h3>Comprehensive Services</h3>
-            <p>From injury rehabilitation to preventive care, we offer a wide range of physiotherapy services.</p>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4">Your Path to Better Health Starts Here</h1>
+                <p class="lead mb-4">Experience personalized physiotherapy care with our expert team. We're committed to helping you achieve your health and wellness goals.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'book_appointment' %}" class="btn btn-primary btn-lg">Book Appointment</a>
+                    <a href="{% url 'virtual_consultation' %}" class="btn btn-outline-light btn-lg">Virtual Consultation</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <img src="{% static 'images/hero-image.jpg' %}" alt="Physiotherapy" class="img-fluid rounded shadow">
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="cta-section">
-        <a href="{% url 'book_appointment' %}" class="btn">Book an Appointment</a>
+<!-- Features Section -->
+<section class="container mb-5">
+    <h2 class="text-center section-title">Why Choose Us</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Expert Care</h3>
+                <p>Our team of certified physiotherapists brings years of experience and specialized training to every treatment.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Personalized Treatment</h3>
+                <p>We create customized treatment plans tailored to your specific needs and goals.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-laptop-medical"></i>
+                </div>
+                <h3>Virtual Care</h3>
+                <p>Access our expert care from the comfort of your home through our virtual consultation services.</p>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<style>
-    .welcome-section {
-        text-align: center;
-        padding: 2rem 0;
-    }
-    .welcome-section h2 {
-        margin-bottom: 1rem;
-        color: #2c3e50;
-    }
-    .welcome-section p {
-        max-width: 800px;
-        margin: 0 auto 2rem;
-    }
-    .features {
-        display: flex;
-        justify-content: space-between;
-        margin: 3rem 0;
-        flex-wrap: wrap;
-    }
-    .feature {
-        flex: 1;
-        min-width: 250px;
-        padding: 1rem;
-        margin: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-    }
-    .feature h3 {
-        color: #3498db;
-        margin-bottom: 0.5rem;
-    }
-    .cta-section {
-        margin-top: 2rem;
-    }
-    .cta-section .btn {
-        font-size: 1.2rem;
-        padding: 12px 30px;
-    }
-</style>
+<!-- Services Preview -->
+<section class="container mb-5">
+    <h2 class="text-center section-title">Our Services</h2>
+    <div class="row g-4">
+        {% for service in services|slice:":3" %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">{{ service.name }}</h3>
+                    <p class="card-text">{{ service.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-primary fw-bold">${{ service.price }}</span>
+                        <a href="{% url 'service_detail' service.id %}" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'services' %}" class="btn btn-primary">View All Services</a>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="container mb-5">
+    <h2 class="text-center section-title">Patient Testimonials</h2>
+    <div class="row g-4">
+        {% for testimonial in testimonials|slice:":3" %}
+        <div class="col-md-4">
+            <div class="card h-100 testimonial-card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= testimonial.rating %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="card-text">{{ testimonial.content|truncatewords:30 }}</p>
+                    <p class="card-text"><small class="text-muted">- {{ testimonial.patient_name }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'testimonials' %}" class="btn btn-primary">Read More Testimonials</a>
+    </div>
+</section>
+
+<!-- Latest Blog Posts -->
+<section class="container mb-5">
+    <h2 class="text-center section-title">Latest Updates</h2>
+    <div class="row g-4">
+        {% for post in latest_posts %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">{{ post.title }}</h3>
+                    <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ post.published_date|date:"F d, Y" }}</small>
+                        <a href="{% url 'blog_post' post.id %}" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'blog' %}" class="btn btn-primary">View All Posts</a>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="container mb-5">
+    <div class="card bg-primary text-white">
+        <div class="card-body text-center p-5">
+            <h2 class="card-title">Ready to Start Your Journey to Better Health?</h2>
+            <p class="card-text lead">Book your appointment today and take the first step towards a pain-free life.</p>
+            <a href="{% url 'book_appointment' %}" class="btn btn-light btn-lg">Schedule Appointment</a>
+        </div>
+    </div>
+</section>
 {% endblock %} 

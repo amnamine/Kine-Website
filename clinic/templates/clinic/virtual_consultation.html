@@ -1,45 +1,76 @@
 {% extends 'clinic/base.html' %}
 {% load static %}
 
+{% block title %}Virtual Consultation - PhysioCare{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Schedule a Virtual Consultation</h2>
+<div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <form method="post">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Virtual Consultation Request</h2>
+                    <p class="text-center text-muted mb-4">Fill out the form below to request a virtual consultation with our specialists.</p>
+                    
+                    <form method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
+                        
                         <div class="mb-3">
-                            <label for="service" class="form-label">Select Service</label>
-                            <select class="form-select" id="service" name="service" required>
-                                <option value="">Choose a service...</option>
-                                {% for service in services %}
-                                <option value="{{ service.id }}">{{ service.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="preferred_date" class="form-label">Preferred Date</label>
-                            <input type="date" class="form-control" id="preferred_date" name="preferred_date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="preferred_time" class="form-label">Preferred Time</label>
-                            <input type="time" class="form-control" id="preferred_time" name="preferred_time" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="symptoms" class="form-label">Describe Your Symptoms</label>
+                            <label for="symptoms" class="form-label">Symptoms</label>
                             <textarea class="form-control" id="symptoms" name="symptoms" rows="3" required></textarea>
+                            <div class="form-text">Please describe your symptoms in detail.</div>
                         </div>
+                        
                         <div class="mb-3">
-                            <label for="medical_history" class="form-label">Medical History (Optional)</label>
+                            <label for="medical_history" class="form-label">Medical History</label>
                             <textarea class="form-control" id="medical_history" name="medical_history" rows="3"></textarea>
+                            <div class="form-text">Please provide any relevant medical history.</div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Schedule Consultation</button>
+                        
+                        <div class="mb-3">
+                            <label for="current_medications" class="form-label">Current Medications</label>
+                            <textarea class="form-control" id="current_medications" name="current_medications" rows="2"></textarea>
+                            <div class="form-text">List any medications you are currently taking.</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="preferred_date" class="form-label">Preferred Date</label>
+                                <input type="date" class="form-control" id="preferred_date" name="preferred_date" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="preferred_time" class="form-label">Preferred Time</label>
+                                <input type="time" class="form-control" id="preferred_time" name="preferred_time" required>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-video me-2"></i>Submit Consultation Request
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    .form-control {
+        border-radius: 8px;
+    }
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: 500;
+    }
+    textarea.form-control {
+        min-height: 100px;
+    }
+</style>
 {% endblock %} 
