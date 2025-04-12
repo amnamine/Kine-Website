@@ -1,0 +1,117 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Patient Testimonials - PhysioCare{% endblock %}
+
+{% block content %}
+<div class="testimonials-section">
+    <h2>Patient Testimonials</h2>
+    <p class="intro-text">Read what our patients have to say about their experience with PhysioCare.</p>
+
+    <div class="testimonials-grid">
+        {% for testimonial in testimonials %}
+        <div class="testimonial-card">
+            <div class="rating">
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= testimonial.rating %}
+                        <span class="star filled">★</span>
+                    {% else %}
+                        <span class="star">☆</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="content">"{{ testimonial.content }}"</p>
+            <div class="patient-info">
+                <span class="name">{{ testimonial.patient_name }}</span>
+                <span class="service">Service: {{ testimonial.service_received.name }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="add-testimonial">
+        <h3>Share Your Experience</h3>
+        <form method="post" class="testimonial-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Submit Testimonial</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .testimonials-section {
+        padding: 2rem 0;
+    }
+    .testimonials-section h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    .intro-text {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+    }
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+    .testimonial-card {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .rating {
+        margin-bottom: 1rem;
+    }
+    .star {
+        color: #ffd700;
+        font-size: 1.2rem;
+    }
+    .star.filled {
+        color: #ffd700;
+    }
+    .content {
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+    .patient-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .name {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    .service {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .add-testimonial {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .add-testimonial h3 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+    .testimonial-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .testimonial-form .btn {
+        align-self: center;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,108 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Frequently Asked Questions - PhysioCare{% endblock %}
+
+{% block content %}
+<div class="faqs-section">
+    <h2>Frequently Asked Questions</h2>
+    <p class="intro-text">Find answers to common questions about our services and treatments.</p>
+
+    <div class="faqs-container">
+        {% for category in categories %}
+        <div class="faq-category">
+            <h3>{{ category|title }}</h3>
+            <div class="faq-list">
+                {% for faq in faqs %}
+                    {% if faq.category == category %}
+                    <div class="faq-item">
+                        <div class="question">
+                            <h4>{{ faq.question }}</h4>
+                        </div>
+                        <div class="answer">
+                            <p>{{ faq.answer }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .faqs-section {
+        padding: 2rem 0;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .faqs-section h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    .intro-text {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .faqs-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .faq-category h3 {
+        color: #3498db;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #3498db;
+    }
+    .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .faq-item {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .question {
+        padding: 1rem;
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+    .question h4 {
+        margin: 0;
+        color: #2c3e50;
+    }
+    .answer {
+        padding: 1rem;
+    }
+    .answer p {
+        margin: 0;
+        line-height: 1.6;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const questions = document.querySelectorAll('.question');
+        
+        questions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                
+                // Close all answers
+                document.querySelectorAll('.answer').forEach(a => {
+                    a.style.display = 'none';
+                });
+                
+                // Toggle current answer
+                answer.style.display = isOpen ? 'none' : 'block';
+            });
+        });
+    });
+</script>
+{% endblock %} 

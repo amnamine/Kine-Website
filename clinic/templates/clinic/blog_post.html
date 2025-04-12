@@ -1,0 +1,79 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}{{ post.title }} - PhysioCare Blog{% endblock %}
+
+{% block content %}
+<div class="blog-post-section">
+    <article class="blog-post">
+        {% if post.image %}
+        <div class="post-image">
+            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+        
+        <div class="post-header">
+            <h1>{{ post.title }}</h1>
+            <div class="meta">
+                <span class="author">By {{ post.author }}</span>
+                <span class="date">{{ post.published_date|date:"F j, Y" }}</span>
+            </div>
+        </div>
+
+        <div class="post-content">
+            {{ post.content|linebreaks }}
+        </div>
+    </article>
+
+    <div class="navigation">
+        <a href="{% url 'blog' %}" class="btn">Back to Blog</a>
+    </div>
+</div>
+
+<style>
+    .blog-post-section {
+        padding: 2rem 0;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .blog-post {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .post-image {
+        height: 400px;
+        overflow: hidden;
+    }
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .post-header {
+        padding: 2rem;
+    }
+    .post-header h1 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    .meta {
+        display: flex;
+        gap: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    .post-content {
+        padding: 0 2rem 2rem;
+        line-height: 1.8;
+    }
+    .post-content p {
+        margin-bottom: 1.5rem;
+    }
+    .navigation {
+        margin-top: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %} 
