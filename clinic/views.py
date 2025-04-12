@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Service, Testimonial, FAQ, BlogPost
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Service, Testimonial, FAQ, BlogPost, VirtualConsultation, PatientPortal, TreatmentRecord
 from .forms import ContactForm, AppointmentForm, TestimonialForm
 
 def home(request):
@@ -78,3 +80,62 @@ def blog(request):
 def blog_post(request, post_id):
     post = get_object_or_404(BlogPost, id=post_id, is_published=True)
     return render(request, 'clinic/blog_post.html', {'post': post})
+
+@login_required
+def virtual_consultation(request):
+    if request.method == 'POST':
+        service_id = request.POST.get('service')
+        preferred_date = request.POST.get('preferred_date')
+        preferred_time = request.POST.get('preferred_time')
+        symptoms = request.POST.get('symptoms')
+        medical_history = request.POST.get('medical_history')
+
+        consultation = VirtualConsultation.objects.create(
+            patient=request.user,
+            service_id=service_id,
+            preferred_date=preferred_date,
+            preferred_time=preferred_time,
+            symptoms=symptoms,
+            medical_history=medical_history
+        )
+        messages.success(request, 'Your virtual consultation has been scheduled successfully!')
+        return redirect('patient_portal')
+
+    services = Service.objects.all()
+    return render(request, 'clinic/virtual_consultation.html', {'services': services})
+
+def price_calculator(request):
+    if request.method == 'POST':
+        service_id = request.POST.get('service')
+        sessions = int(request.POST.get('sessions', 1))
+        
+        service = get_object_or_404(Service, id=service_id)
+        base_price = float(service.price)
+        
+        # Apply any discounts or special pricing logic here
+        total_price = base_price * sessions
+        
+        return JsonResponse({
+            'total_price': total_price,
+            'base_price': base_price,
+            'sessions': sessions
+        })
+    
+    services = Service.objects.all()
+    return render(request, 'clinic/price_calculator.html', {'services': services})
+
+@login_required
+def patient_portal(request):
+    try:
+        portal = PatientPortal.objects.get(user=request.user)
+    except PatientPortal.DoesNotExist:
+        portal = PatientPortal.objects.create(user=request.user)
+    
+    consultations = VirtualConsultation.objects.filter(patient=request.user)
+    treatments = TreatmentRecord.objects.filter(patient=request.user)
+    
+    return render(request, 'clinic/patient_portal.html', {
+        'portal': portal,
+        'consultations': consultations,
+        'treatments': treatments
+    })

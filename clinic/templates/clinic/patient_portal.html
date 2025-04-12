@@ -1,0 +1,120 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Your Patient Portal</h2>
+    
+    <div class="row">
+        <!-- Medical History -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Medical History</h5>
+                </div>
+                <div class="card-body">
+                    {% if portal.medical_history %}
+                        <p>{{ portal.medical_history }}</p>
+                    {% else %}
+                        <p>No medical history recorded yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment History -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Treatment History</h5>
+                </div>
+                <div class="card-body">
+                    {% if portal.treatment_history %}
+                        <p>{{ portal.treatment_history }}</p>
+                    {% else %}
+                        <p>No treatment history recorded yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Virtual Consultations -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Your Virtual Consultations</h5>
+        </div>
+        <div class="card-body">
+            {% if consultations %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Meeting Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for consultation in consultations %}
+                            <tr>
+                                <td>{{ consultation.preferred_date }}</td>
+                                <td>{{ consultation.preferred_time }}</td>
+                                <td>{{ consultation.service.name }}</td>
+                                <td>{{ consultation.status }}</td>
+                                <td>
+                                    {% if consultation.meeting_link %}
+                                        <a href="{{ consultation.meeting_link }}" target="_blank">Join Meeting</a>
+                                    {% else %}
+                                        Not available yet
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No virtual consultations scheduled yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Treatment Records -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Your Treatment Records</h5>
+        </div>
+        <div class="card-body">
+            {% if treatments %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Service</th>
+                                <th>Notes</th>
+                                <th>Follow-up Instructions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for treatment in treatments %}
+                            <tr>
+                                <td>{{ treatment.date }}</td>
+                                <td>{{ treatment.service.name }}</td>
+                                <td>{{ treatment.notes }}</td>
+                                <td>{{ treatment.follow_up_instructions }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No treatment records found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -11,4 +11,7 @@ urlpatterns = [
     path('faqs/', views.faqs, name='faqs'),
     path('blog/', views.blog, name='blog'),
     path('blog/<int:post_id>/', views.blog_post, name='blog_post'),
+    path('virtual-consultation/', views.virtual_consultation, name='virtual_consultation'),
+    path('price-calculator/', views.price_calculator, name='price_calculator'),
+    path('patient-portal/', views.patient_portal, name='patient_portal'),
 ] 

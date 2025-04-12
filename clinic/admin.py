@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Service, ContactMessage, Appointment, Testimonial, FAQ, BlogPost
+from .models import Service, ContactMessage, Appointment, Testimonial, FAQ, BlogPost, VirtualConsultation, PatientPortal, TreatmentRecord
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
@@ -41,3 +41,24 @@ class BlogPostAdmin(admin.ModelAdmin):
     list_filter = ('is_published', 'published_date')
     search_fields = ('title', 'content', 'author')
     list_editable = ('is_published',)
+
+@admin.register(VirtualConsultation)
+class VirtualConsultationAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'service', 'preferred_date', 'preferred_time', 'status', 'created_at')
+    list_filter = ('service', 'preferred_date', 'status', 'created_at')
+    search_fields = ('patient__username', 'symptoms', 'medical_history')
+    readonly_fields = ('created_at',)
+    list_editable = ('status',)
+
+@admin.register(PatientPortal)
+class PatientPortalAdmin(admin.ModelAdmin):
+    list_display = ('user', 'last_updated')
+    search_fields = ('user__username', 'medical_history', 'treatment_history')
+    readonly_fields = ('last_updated',)
+
+@admin.register(TreatmentRecord)
+class TreatmentRecordAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'service', 'date', 'created_at')
+    list_filter = ('service', 'date', 'created_at')
+    search_fields = ('patient__username', 'notes', 'follow_up_instructions')
+    readonly_fields = ('created_at',)

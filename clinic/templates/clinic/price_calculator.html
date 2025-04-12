@@ -1,0 +1,70 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Treatment Price Calculator</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form id="priceCalculatorForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="service" class="form-label">Select Service</label>
+                            <select class="form-select" id="service" name="service" required>
+                                <option value="">Choose a service...</option>
+                                {% for service in services %}
+                                <option value="{{ service.id }}" data-price="{{ service.price }}">
+                                    {{ service.name }} - ${{ service.price }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sessions" class="form-label">Number of Sessions</label>
+                            <input type="number" class="form-control" id="sessions" name="sessions" min="1" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Calculate Price</button>
+                        </div>
+                    </form>
+                    <div id="result" class="mt-4" style="display: none;">
+                        <h4>Price Estimate</h4>
+                        <p>Base Price: $<span id="basePrice">0</span></p>
+                        <p>Number of Sessions: <span id="sessionCount">0</span></p>
+                        <h5>Total Price: $<span id="totalPrice">0</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('priceCalculatorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const serviceId = document.getElementById('service').value;
+    const sessions = document.getElementById('sessions').value;
+    
+    fetch('/price-calculator/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: `service=${serviceId}&sessions=${sessions}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('basePrice').textContent = data.base_price;
+        document.getElementById('sessionCount').textContent = data.sessions;
+        document.getElementById('totalPrice').textContent = data.total_price;
+        document.getElementById('result').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

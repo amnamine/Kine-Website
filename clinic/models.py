@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -10,6 +11,7 @@ class Service(models.Model):
     detailed_description = models.TextField(blank=True)
     benefits = models.TextField(blank=True)
     what_to_expect = models.TextField(blank=True)
+    price_calculator = models.JSONField(blank=True, null=True, help_text="JSON configuration for price calculator")
 
     def __str__(self):
         return self.name
@@ -79,3 +81,43 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return self.title
+
+class VirtualConsultation(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    preferred_date = models.DateField()
+    preferred_time = models.TimeField()
+    symptoms = models.TextField()
+    medical_history = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    meeting_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Virtual Consultation for {self.patient.username} on {self.preferred_date}"
+
+class PatientPortal(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    medical_history = models.TextField(blank=True)
+    treatment_history = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Patient Portal for {self.user.username}"
+
+class TreatmentRecord(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    date = models.DateField()
+    notes = models.TextField()
+    follow_up_instructions = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Treatment record for {self.patient.username} on {self.date}"
