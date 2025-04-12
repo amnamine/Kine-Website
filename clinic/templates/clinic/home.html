@@ -1,0 +1,69 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Home - PhysioCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h2>Welcome to PhysioCare</h2>
+    <p>Your trusted partner in physiotherapy and rehabilitation services. We are dedicated to helping you achieve optimal physical health and well-being through personalized treatment plans and expert care.</p>
+    
+    <div class="features">
+        <div class="feature">
+            <h3>Expert Care</h3>
+            <p>Our team of experienced physiotherapists provides personalized treatment plans tailored to your specific needs.</p>
+        </div>
+        <div class="feature">
+            <h3>Modern Facilities</h3>
+            <p>State-of-the-art equipment and comfortable treatment spaces ensure the best possible care experience.</p>
+        </div>
+        <div class="feature">
+            <h3>Comprehensive Services</h3>
+            <p>From injury rehabilitation to preventive care, we offer a wide range of physiotherapy services.</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <a href="{% url 'book_appointment' %}" class="btn">Book an Appointment</a>
+    </div>
+</div>
+
+<style>
+    .welcome-section {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    .welcome-section h2 {
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+    .welcome-section p {
+        max-width: 800px;
+        margin: 0 auto 2rem;
+    }
+    .features {
+        display: flex;
+        justify-content: space-between;
+        margin: 3rem 0;
+        flex-wrap: wrap;
+    }
+    .feature {
+        flex: 1;
+        min-width: 250px;
+        padding: 1rem;
+        margin: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    .feature h3 {
+        color: #3498db;
+        margin-bottom: 0.5rem;
+    }
+    .cta-section {
+        margin-top: 2rem;
+    }
+    .cta-section .btn {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+    }
+</style>
+{% endblock %} 

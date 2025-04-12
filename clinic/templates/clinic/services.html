@@ -1,0 +1,73 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Services - PhysioCare{% endblock %}
+
+{% block content %}
+<div class="services-section">
+    <h2>Our Services</h2>
+    <p class="intro-text">We offer a comprehensive range of physiotherapy services to help you achieve your health and wellness goals.</p>
+
+    <div class="services-grid">
+        {% for service in services %}
+        <div class="service-card">
+            <h3>{{ service.name }}</h3>
+            <p class="duration">Duration: {{ service.duration }}</p>
+            <p class="price">Price: ${{ service.price }}</p>
+            <p class="description">{{ service.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cta-section">
+        <a href="{% url 'book_appointment' %}" class="btn">Schedule a Session</a>
+    </div>
+</div>
+
+<style>
+    .services-section {
+        padding: 2rem 0;
+    }
+    .services-section h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    .intro-text {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+    }
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+    .service-card {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .service-card h3 {
+        color: #3498db;
+        margin-bottom: 0.5rem;
+    }
+    .duration, .price {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .description {
+        margin-top: 1rem;
+    }
+    .cta-section {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    .cta-section .btn {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+    }
+</style>
+{% endblock %} 

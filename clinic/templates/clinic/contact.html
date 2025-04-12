@@ -1,0 +1,90 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Contact Us - PhysioCare{% endblock %}
+
+{% block content %}
+<div class="contact-section">
+    <h2>Contact Us</h2>
+    
+    <div class="contact-container">
+        <div class="contact-info">
+            <h3>Get in Touch</h3>
+            <div class="info-item">
+                <h4>Address</h4>
+                <p>123 Health Street<br>Medical District<br>City, State 12345</p>
+            </div>
+            <div class="info-item">
+                <h4>Phone</h4>
+                <p>(123) 456-7890</p>
+            </div>
+            <div class="info-item">
+                <h4>Email</h4>
+                <p>info@physiocare.com</p>
+            </div>
+            <div class="info-item">
+                <h4>Hours</h4>
+                <p>Monday - Friday: 9:00 AM - 6:00 PM<br>
+                   Saturday: 10:00 AM - 4:00 PM<br>
+                   Sunday: Closed</p>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <h3>Send us a Message</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-section {
+        padding: 2rem 0;
+    }
+    .contact-section h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+    }
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .contact-info, .contact-form {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .info-item {
+        margin-bottom: 1.5rem;
+    }
+    .info-item h4 {
+        color: #3498db;
+        margin-bottom: 0.5rem;
+    }
+    .contact-form h3 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+    .contact-form form {
+        display: flex;
+        flex-direction: column;
+    }
+    .contact-form .btn {
+        align-self: flex-start;
+        margin-top: 1rem;
+    }
+    @media (max-width: 768px) {
+        .contact-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 
